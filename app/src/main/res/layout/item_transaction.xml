@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_transaction"
+    cardBackgroundColor="@android:color/white"
+    cardCornerRadius="5dp"
+    cardPreventCornerOverlap="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/cardview_margin"
+    android:layout_marginRight="@dimen/cardview_margin"
+    android:layout_marginBottom="@dimen/cardview_margin"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/cardview_paddingVertical"
+        android:layout_marginLeft="@dimen/cardview_paddingHorizontal"
+        android:layout_marginRight="@dimen/cardview_paddingHorizontal"
+        android:layout_marginTop="@dimen/cardview_paddingVertical"
+        android:orientation="horizontal">
+
+        <ImageView
+        android:id="@+id/img_type"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="10dp"
+        android:layout_weight="0.1"
+        android:src="@drawable/ic_income" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:fontFamily="sans-serif"
+                android:text="2014-08-12 11:14:54"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:layout_marginTop="4dp"
+                android:text="Beli pulsa"
+                android:textColor="@color/grey"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_amount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center_vertical|end"
+            android:text="Rp. 1.000.000"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
