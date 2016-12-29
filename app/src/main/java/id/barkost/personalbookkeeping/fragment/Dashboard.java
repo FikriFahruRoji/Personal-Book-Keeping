@@ -2,7 +2,6 @@ package id.barkost.personalbookkeeping.fragment;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -14,21 +13,26 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,7 +62,9 @@ public class Dashboard extends Fragment {
     private DatabaseHelper myDB;
 
     private TextView tv_sum_income, tv_sum_outcome, tv_sum_balance;
-    EditText description_input,amount_input,date_input,time_input;
+    private EditText description_input, amount_input, date_input, time_input;
+    private RadioButton rbIn, rbOut;
+    private String type = "In";
 
     @Nullable
     @Override
@@ -82,9 +88,31 @@ public class Dashboard extends Fragment {
             public void onClick(View view) {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 final View dialoglayout1 = inflater.inflate(R.layout.layout_input, null);
+
                 date_input = (EditText) dialoglayout1.findViewById(R.id.date_input);
                 time_input = (EditText) dialoglayout1.findViewById(R.id.time_input);
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                description_input = (EditText) dialoglayout1.findViewById(R.id.description_input_ET);
+                amount_input = (EditText) dialoglayout1.findViewById(R.id.amount_input_ET);
+                rbIn = (RadioButton) dialoglayout1.findViewById(R.id.radio_income);
+                rbOut = (RadioButton) dialoglayout1.findViewById(R.id.radio_outcome);
+
+                rbIn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { if (rbIn.isChecked()) { type = "In";} }
+                });
+                rbOut.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { if (rbOut.isChecked()) { type = "Out"; } }
+                });
+
+                DateFormat timeF = new SimpleDateFormat("HH:mm");
+                DateFormat dateF = new SimpleDateFormat("dd-MM-yyyy");
+                String time = timeF.format(Calendar.getInstance().getTime());
+                final String date = dateF.format(Calendar.getInstance().getTime());
+                date_input.setText(date);
+                time_input.setText(time);
+
+                final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
                 builder.setTitle("Add transaction");
                 builder.setView(dialoglayout1);
                 builder.setCancelable(true);
@@ -92,12 +120,20 @@ public class Dashboard extends Fragment {
                 timePicker();
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        String datetime = date_input.getText() + " " + time_input.getText();
+                        String desc = String.valueOf(description_input.getText());
+                        int amount =Integer.parseInt(String.valueOf(amount_input.getText()));
+                        boolean a = myDB.save_table_transaction(datetime, type, desc, amount);
+                        if (a) {
+                            getDataFromTable();
+                            Toast.makeText(getActivity(), "Transaction added", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {dialog.cancel();
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
                             }
                         });
                 builder.show();
@@ -140,13 +176,72 @@ public class Dashboard extends Fragment {
             @Override
             public void onClick(View view, final int position) {
                 final ModelTransaction transaction = transactionsList.get(position);
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                final View dialoglayout1 = inflater.inflate(R.layout.layout_input, null);
+
+                date_input = (EditText) dialoglayout1.findViewById(R.id.date_input);
+                time_input = (EditText) dialoglayout1.findViewById(R.id.time_input);
+                description_input = (EditText) dialoglayout1.findViewById(R.id.description_input_ET);
+                amount_input = (EditText) dialoglayout1.findViewById(R.id.amount_input_ET);
+                rbIn = (RadioButton) dialoglayout1.findViewById(R.id.radio_income);
+                rbOut = (RadioButton) dialoglayout1.findViewById(R.id.radio_outcome);
+
+                rbIn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { if (rbIn.isChecked()) { type = "In";} }
+                });
+                rbOut.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { if (rbOut.isChecked()) { type = "Out"; } }
+                });
+
+                date_input.setText(transaction.getTransaction_date()
+                        .substring(0, transaction.getTransaction_date().indexOf(' ')));
+                time_input.setText(transaction.getTransaction_date()
+                        .substring(10));;
+                description_input.setText(transaction.getTransaction_detail());
+                amount_input.setText(String.valueOf(transaction.getTransaction_amount()));
+
+//                if (transaction.getTransaction_type() == "In") {
+//                    rbIn.setChecked(true);
+//                } else if (transaction.getTransaction_type() == "Out") {
+//                    rbOut.setChecked(true);
+//                }
+
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                builder.setTitle("Edit transaction");
+                builder.setView(dialoglayout1);
+                builder.setCancelable(true);
+                datePicker();
+                timePicker();
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        int trans_id = transaction.getTransaction_id();
+                        String datetime = date_input.getText() + " " + time_input.getText();
+                        String desc = String.valueOf(description_input.getText());
+                        int amount =Integer.parseInt(String.valueOf(amount_input.getText()));
+
+                        boolean a = myDB.update_table_transaction(trans_id, datetime, type, desc, amount);
+                        if (a) {
+                            getDataFromTable();
+                            Toast.makeText(getActivity(), "Transaction edited", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                builder.show();
             }
 
             @Override
             public void onLongClick(View view, int position) {
                 final ModelTransaction transaction = transactionsList.get(position);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setTitle("Delete student");
+                alertDialogBuilder.setTitle("Delete transaction");
                 alertDialogBuilder.setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -156,7 +251,8 @@ public class Dashboard extends Fragment {
                         })
                         .setNegativeButton("Cancel",
                                 new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {dialog.cancel();
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
                                     }
                                 });
                 AlertDialog alert = alertDialogBuilder.create();
@@ -197,7 +293,7 @@ public class Dashboard extends Fragment {
         tv_sum_balance.setText(getString(R.string.tx_balance) + " : Rp. " + String.valueOf(df.format(total_income - total_outcome)));
     }
 
-    private  void datePicker(){
+    private void datePicker() {
         myCalendar = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -224,7 +320,7 @@ public class Dashboard extends Fragment {
         });
     }
 
-    private void timePicker(){
+    private void timePicker() {
         time_input.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

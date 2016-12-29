@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean update_table_transaction(String id, String date, String type, String detail, int amount) {
+    public boolean update_table_transaction(int id, String date, String type, String detail, int amount) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content_values = new ContentValues();
         content_values.put("id", id);
@@ -76,7 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         content_values.put("type", type);
         content_values.put("detail", detail);
         content_values.put("amount", amount);
-        db.update("transactions", content_values, id + " = ?", new String[]{id});
+        db.update("transactions", content_values, "id = ?", new String[]{String.valueOf(id)});
         return true;
     }
 

@@ -1,61 +1,95 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:layout_margin="@dimen/cardview_margin"
+    android:orientation="vertical">
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/cardview_margin">
+
         <EditText
             android:id="@+id/description_input_ET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/tx_descriptions"
-            android:inputType="textCapWords|textCapSentences"/>
+            android:inputType="textCapWords|textCapSentences" />
     </android.support.design.widget.TextInputLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/cardview_margin"
         android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="0dp"
-            android:layout_weight="0.4"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4">
+
             <EditText
+                android:id="@+id/time_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/time_input"
-                android:hint="@string/time"
-                android:focusableInTouchMode="false">
+                android:focusableInTouchMode="false"
+                android:hint="@string/time">
 
             </EditText>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="0dp"
-            android:layout_weight="0.6"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6">
+
             <EditText
+                android:id="@+id/date_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/date_input"
-                android:hint="@string/date"
-                android:focusableInTouchMode="false">
+                android:focusableInTouchMode="false"
+                android:hint="@string/date">
 
             </EditText>
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/in_out"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear1"
+        android:layout_margin="@dimen/cardview_margin"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_horizontal_margin">
+
+        <RadioButton
+            android:id="@+id/radio_income"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:text="@string/tx_income" />
+
+        <RadioButton
+            android:id="@+id/radio_outcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tx_outcome" />
+    </RadioGroup>
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/cardview_margin">
+
         <EditText
             android:id="@+id/amount_input_ET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:numeric="integer"
             android:hint="@string/tx_amount"
-            android:inputType="numberDecimal"
-            android:digits="0123456789.,"/>
+            android:inputType="numberDecimal" />
     </android.support.design.widget.TextInputLayout>
 </LinearLayout>
